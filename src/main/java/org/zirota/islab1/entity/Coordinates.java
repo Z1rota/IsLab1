@@ -1,6 +1,7 @@
 package org.zirota.islab1.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Coordinates {
@@ -8,7 +9,11 @@ public class Coordinates {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
+    @Column(nullable = false)
     private long x;
+    @NotNull
+    @Column(nullable = false)
     private long y;
 
 

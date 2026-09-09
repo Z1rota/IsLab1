@@ -1,9 +1,8 @@
 package org.zirota.islab1.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Location {
@@ -11,7 +10,10 @@ public class Location {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Координата X не может быть null")
+    @Column(nullable = false)
     private Double x;
+
     private double y;
     private float z;
 
