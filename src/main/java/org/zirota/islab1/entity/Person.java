@@ -29,7 +29,7 @@ public class Person {
     @Enumerated(EnumType.STRING)
     private Color eyeColor;
 
-    @NotNull
+    @NotNull(message = "Нужен цвет волос")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Color hairColor;
@@ -40,7 +40,7 @@ public class Person {
     private Location location;
 
     @NotNull
-    @Positive
+    @Positive(message = "Рост должен быть больше 0")
     @Column(nullable = false)
     private Double height;
 

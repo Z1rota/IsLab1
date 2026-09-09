@@ -1,10 +1,15 @@
 package org.zirota.islab1.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zirota.islab1.entity.Coordinates;
 import org.zirota.islab1.entity.Location;
 import org.zirota.islab1.entity.Person;
+import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.repository.CoordinatesRepository;
 import org.zirota.islab1.repository.LocationRepository;
 import org.zirota.islab1.repository.PersonRepository;
@@ -25,8 +30,15 @@ public class PersonService {
         this.coordinatesRepository = coordinatesRepository;
     }
 
-    public List<Person> getAll() {
-        return personRepository.findAll();
+    public Page<Person> getAll(int page, int size, String sortBy, String direction, String name) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        if (name != null && !name.isBlank()) {
+            return personRepository.findByName(name, pageable);
+        }
+        return personRepository.findAll(pageable);
     }
     public Person getById(int id) {
         return personRepository.findById(id).orElseThrow(() -> new RuntimeException("Человека нет"));
@@ -35,9 +47,9 @@ public class PersonService {
     @Transactional
     public Person create(Person person) {
         Location loc = locationRepository.findById(person.getLocation().getId()).orElseThrow(() ->
-                new RuntimeException("Нет такой локации"));
+                new NotFoundException("Нет такой локации"));
         Coordinates cord = coordinatesRepository.findById(person.getCoordinates().getId()).orElseThrow(() ->
-                new RuntimeException("нет таких координат"));
+                new NotFoundException("нет таких координат"));
 
         person.setLocation(loc);
         person.setCoordinates(cord);
@@ -51,12 +63,12 @@ public class PersonService {
         Coordinates coordinates = coordinatesRepository
                 .findById(updatedPerson.getCoordinates().getId())
                 .orElseThrow(() ->
-                        new RuntimeException("Coordinates not found"));
+                        new NotFoundException("Coordinates not found"));
 
         Location location = locationRepository
                 .findById(updatedPerson.getLocation().getId())
                 .orElseThrow(() ->
-                        new RuntimeException("Location not found"));
+                        new NotFoundException("Location not found"));
 
         person.setCoordinates(coordinates);
         person.setLocation(location);

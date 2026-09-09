@@ -2,6 +2,7 @@ package org.zirota.islab1.service;
 
 import org.springframework.stereotype.Service;
 import org.zirota.islab1.entity.Coordinates;
+import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.repository.CoordinatesRepository;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class CoordinatesService {
         return coordinatesRepository.findAll();
     }
     public Coordinates findById(Long id) {
-        return coordinatesRepository.findById(id).orElseThrow(() -> new RuntimeException("Таких координат нет"));
+        return coordinatesRepository.findById(id).orElseThrow(() -> new NotFoundException("Таких координат нет"));
     }
     public Coordinates create(Coordinates coordinates) {
         return coordinatesRepository.save(coordinates);

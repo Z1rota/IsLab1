@@ -3,6 +3,7 @@ package org.zirota.islab1.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zirota.islab1.entity.Location;
+import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.repository.LocationRepository;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class LocationService {
         return locationRepository.findAll();
     }
     public Location findById(Long id) {
-        Location loc = locationRepository.findById(id).orElseThrow(() -> new RuntimeException("Локация не найдена"));
+        Location loc = locationRepository.findById(id).orElseThrow(() -> new NotFoundException("Локация не найдена"));
         return loc;
     }
 
