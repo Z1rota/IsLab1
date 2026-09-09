@@ -1,6 +1,7 @@
 package org.zirota.islab1.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.zirota.islab1.entity.Coordinates;
 import org.zirota.islab1.service.CoordinatesService;
@@ -28,6 +29,12 @@ public class CoordinatesController {
     @PostMapping()
     public Coordinates createCoordinates(@Valid @RequestBody Coordinates coordinates) {
         return coordinatesService.create(coordinates);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        coordinatesService.delete(id);
     }
 
 }

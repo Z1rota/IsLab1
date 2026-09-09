@@ -6,4 +6,5 @@ import org.zirota.islab1.entity.Coordinates;
 
 @Repository
 public interface CoordinatesRepository extends JpaRepository<Coordinates, Long> {
+
 }

@@ -25,4 +25,9 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(ObjectUsedException.class)
+    public ResponseEntity<String> handleObjectUsedException(ObjectUsedException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }

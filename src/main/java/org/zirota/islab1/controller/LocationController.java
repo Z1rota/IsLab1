@@ -1,6 +1,7 @@
 package org.zirota.islab1.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.zirota.islab1.entity.Location;
 import org.zirota.islab1.service.LocationService;
@@ -27,6 +28,12 @@ public class LocationController {
     @PostMapping
     public void createLocation(@Valid @RequestBody Location location) {
         locationService.create(location);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        locationService.delete(id);
     }
 
 

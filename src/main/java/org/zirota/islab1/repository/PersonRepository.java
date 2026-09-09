@@ -32,5 +32,9 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     @Query(value = "SELECT count_by_eye_color(:color)", nativeQuery = true)
     Long countByEyeColor(@Param("color") String color);
 
+    boolean existsByCoordinatesId(Long id);
+
+    boolean existsByLocationId(Long id);
+
 
 }
