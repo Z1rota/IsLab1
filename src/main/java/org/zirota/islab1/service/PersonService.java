@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zirota.islab1.entity.Coordinates;
-import org.zirota.islab1.entity.Location;
-import org.zirota.islab1.entity.Person;
+import org.zirota.islab1.dto.NationalityAdapter;
+import org.zirota.islab1.dto.NationalityCountDto;
+import org.zirota.islab1.entity.*;
 import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.repository.CoordinatesRepository;
 import org.zirota.islab1.repository.LocationRepository;
@@ -81,6 +81,42 @@ public class PersonService {
         return personRepository.save(person);
 
     }
+
+    @Transactional
+    public Integer deleteByNationality(Country nationality) {
+        Integer deleted = personRepository.deleteOneByNationality(nationality.name());
+        if (deleted == null) {
+            throw new NotFoundException(
+                    "Пользователей с такой национальностью не найдено"
+            );
+        }
+        return deleted;
+    }
+
+    public Person getMinHeightPerson() {
+        Person person = personRepository.findMinHeightPerson();
+        if (person == null) {
+            throw new NotFoundException("Такого человека нет");
+        }
+        return person;
+    }
+
+    public List<NationalityCountDto> groupByNationality() {
+        List<NationalityAdapter> result = personRepository.groupByNationality();
+        return result.stream().map(row -> new NationalityCountDto(
+                row.getNationality() == null
+                        ? null
+                :Country.valueOf(row.getNationality()),row.getPersonCount())).toList();
+    }
+
+    public Double getHairColor(Color color) {
+        return personRepository.getHairColorPercentage(color.name());
+    }
+
+    public Long countByEyeColor(Color color) {
+        return personRepository.countByEyeColor(color.name());
+    }
+
 
     @Transactional
     public void delete(Integer id) {

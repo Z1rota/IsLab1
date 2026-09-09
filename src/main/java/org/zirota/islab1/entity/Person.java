@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.ZonedDateTime;
 
 @Entity
-
+@Table(name = "person")
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
