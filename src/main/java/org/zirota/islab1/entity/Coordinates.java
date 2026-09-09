@@ -29,4 +29,7 @@ public class Coordinates {
     public void setY(long y) {
         this.y = y;
     }
+    public Long getId() {
+        return id;
+    }
 }

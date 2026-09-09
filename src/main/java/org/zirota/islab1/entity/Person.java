@@ -45,7 +45,72 @@ public class Person {
     private Double height;
 
     @Enumerated(EnumType.STRING)
-    private Country country;
+    private Country nationality;
 
+    public @NotBlank(message = "Имя не должно быть пустым") String getName() {
+        return name;
+    }
 
+    public void setName(@NotBlank(message = "Имя не должно быть пустым") String name) {
+        this.name = name;
+    }
+
+    public @NotNull(message = "Координаты не могут быть пустыми") Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(@NotNull(message = "Координаты не могут быть пустыми") Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public @NotNull ZonedDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(@NotNull ZonedDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Color getEyeColor() {
+        return eyeColor;
+    }
+
+    public void setEyeColor(Color eyeColor) {
+        this.eyeColor = eyeColor;
+    }
+
+    public @NotNull Color getHairColor() {
+        return hairColor;
+    }
+
+    public void setHairColor(@NotNull Color hairColor) {
+        this.hairColor = hairColor;
+    }
+
+    public @NotNull(message = "Локация не может быть пустой") Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(@NotNull(message = "Локация не может быть пустой") Location location) {
+        this.location = location;
+    }
+
+    public @NotNull @Positive Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(@NotNull @Positive Double height) {
+        this.height = height;
+    }
+
+    public Country getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(Country country) {
+        this.nationality = country;
+    }
+    public Integer getId() {
+        return id;
+    }
 }

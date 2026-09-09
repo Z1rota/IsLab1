@@ -32,4 +32,7 @@ public class Location {
     public Float getZ() {
         return z;
     }
+    public Long getId() {
+        return id;
+    }
 }
