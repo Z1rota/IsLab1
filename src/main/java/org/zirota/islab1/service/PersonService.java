@@ -1,5 +1,6 @@
 package org.zirota.islab1.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zirota.islab1.dto.NationalityAdapter;
 import org.zirota.islab1.dto.NationalityCountDto;
+import org.zirota.islab1.dto.PersonEvent;
 import org.zirota.islab1.entity.*;
 import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.repository.CoordinatesRepository;
@@ -21,13 +23,16 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final LocationRepository locationRepository;
     private final CoordinatesRepository coordinatesRepository;
+    private final ApplicationEventPublisher eventPublisher;
+
 
     public PersonService(PersonRepository personRepository,
                          LocationRepository locationRepository,
-                         CoordinatesRepository coordinatesRepository) {
+                         CoordinatesRepository coordinatesRepository, ApplicationEventPublisher eventPublisher) {
         this.personRepository = personRepository;
         this.locationRepository = locationRepository;
         this.coordinatesRepository = coordinatesRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public Page<Person> getAll(int page, int size, String sortBy, String direction, String name) {
@@ -46,16 +51,27 @@ public class PersonService {
 
     @Transactional
     public Person create(Person person) {
-        Location loc = locationRepository.findById(person.getLocation().getId()).orElseThrow(() ->
-                new NotFoundException("Нет такой локации"));
-        Coordinates cord = coordinatesRepository.findById(person.getCoordinates().getId()).orElseThrow(() ->
-                new NotFoundException("нет таких координат"));
+        Coordinates coordinates = coordinatesRepository
+                .findById(person.getCoordinates().getId())
+                .orElseThrow(() ->
+                        new NotFoundException("Coordinates not found"));
 
-        person.setLocation(loc);
-        person.setCoordinates(cord);
-        return personRepository.save(person);
+        Location location = locationRepository
+                .findById(person.getLocation().getId())
+                .orElseThrow(() ->
+                        new NotFoundException("Location not found"));
 
+        person.setCoordinates(coordinates);
+        person.setLocation(location);
+
+        Person savedPerson = personRepository.save(person);
+
+        eventPublisher.publishEvent(
+                new PersonEvent("CREATED", savedPerson.getId())
+        );
+        return savedPerson;
     }
+
     @Transactional
     public Person update(Integer id, Person updatedPerson) {
         Person person = getById(id);
@@ -78,7 +94,12 @@ public class PersonService {
         person.setHeight(updatedPerson.getHeight());
         person.setNationality(updatedPerson.getNationality());
 
-        return personRepository.save(person);
+        personRepository.save(person);
+        eventPublisher.publishEvent(
+                new PersonEvent("UPDATED", person.getId()));
+
+        return person;
+
 
     }
 
@@ -90,6 +111,9 @@ public class PersonService {
                     "Пользователей с такой национальностью не найдено"
             );
         }
+        eventPublisher.publishEvent(
+                new PersonEvent("DELETED", deleted)
+        );
         return deleted;
     }
 
@@ -121,6 +145,11 @@ public class PersonService {
     @Transactional
     public void delete(Integer id) {
         Person person = getById(id);
+
         personRepository.delete(person);
+
+        eventPublisher.publishEvent(
+                new PersonEvent("DELETED", id)
+        );
     }
 }
