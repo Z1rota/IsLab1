@@ -2,6 +2,7 @@ package org.zirota.islab1.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.zirota.islab1.dto.NationalityCountDto;
+import org.zirota.islab1.entity.Color;
 import org.zirota.islab1.entity.Country;
 import org.zirota.islab1.entity.Person;
 import org.zirota.islab1.service.PersonService;
@@ -9,7 +10,7 @@ import org.zirota.islab1.service.PersonService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/person/special")
+@RequestMapping("/api/persons/special")
 public class CustomOperPersonController {
     private final PersonService personService;
 
@@ -32,12 +33,12 @@ public class CustomOperPersonController {
     }
 
     @GetMapping("/hair-percentage/{color}")
-    public Person getPersonHairPercentage(@PathVariable String color) {
-        return personService.getMinHeightPerson();
+    public Double getPersonHairPercentage(@PathVariable Color color) {
+        return personService.getHairColor(color);
     }
 
     @GetMapping("/eye-count/{color}")
-    public Person getPersonEyeCount(@PathVariable String color) {
-        return personService.getMinHeightPerson();
+    public Long getPersonEyeCount(@PathVariable Color color) {
+        return personService.countByEyeColor(color);
     }
 }

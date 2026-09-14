@@ -28,8 +28,8 @@ public class LocationService {
     }
 
     @Transactional
-    public void create(Location location) {
-        locationRepository.save(location);
+    public Location create(Location location) {
+        return locationRepository.save(location);
     }
 
 

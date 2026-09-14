@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.ZonedDateTime;
 
@@ -24,6 +25,7 @@ public class Person {
     @JoinColumn(name="coordinates_id", nullable = false)
     private Coordinates coordinates;
 
+    @CreationTimestamp
     @NotNull
     @Column(name="creation_date",nullable = false)
     private ZonedDateTime creationDate;
