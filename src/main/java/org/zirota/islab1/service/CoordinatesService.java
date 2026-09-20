@@ -1,7 +1,9 @@
 package org.zirota.islab1.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zirota.islab1.dto.CoordinatesEvent;
 import org.zirota.islab1.entity.Coordinates;
 import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.exceptions.ObjectUsedException;
@@ -14,10 +16,13 @@ import java.util.List;
 public class CoordinatesService {
     private final CoordinatesRepository coordinatesRepository;
     private final PersonRepository personRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public CoordinatesService(CoordinatesRepository coordinatesRepository, PersonRepository personRepository) {
+    public CoordinatesService(CoordinatesRepository coordinatesRepository, PersonRepository personRepository, ApplicationEventPublisher eventPublisher) {
         this.coordinatesRepository = coordinatesRepository;
         this.personRepository = personRepository;
+        this.eventPublisher = eventPublisher;
+
     }
 
     public List<Coordinates> findAll() {
@@ -29,7 +34,9 @@ public class CoordinatesService {
 
     @Transactional
     public Coordinates create(Coordinates coordinates) {
-        return coordinatesRepository.save(coordinates);
+        Coordinates cord = coordinatesRepository.save(coordinates);
+        eventPublisher.publishEvent(new CoordinatesEvent("CREATED", cord.getId()));
+        return cord;
     }
 
     @Transactional
@@ -38,6 +45,7 @@ public class CoordinatesService {
         if (personRepository.existsByCoordinatesId(coordinates.getId())) {
             throw new ObjectUsedException("Координаты связаны с какой-то персоной");
         }
+        eventPublisher.publishEvent(new CoordinatesEvent("DELETED", id));
         coordinatesRepository.delete(coordinates);
     }
 }

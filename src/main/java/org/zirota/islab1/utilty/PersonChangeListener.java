@@ -15,6 +15,6 @@ public class PersonChangeListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(PersonEvent event) {
-        messagingTemplate.convertAndSend("/topic/persons", event);
+        messagingTemplate.convertAndSend("/topic/person", event);
     }
 }

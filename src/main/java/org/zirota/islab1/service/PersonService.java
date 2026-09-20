@@ -95,8 +95,7 @@ public class PersonService {
         person.setNationality(updatedPerson.getNationality());
 
         personRepository.save(person);
-        eventPublisher.publishEvent(
-                new PersonEvent("UPDATED", person.getId()));
+        eventPublisher.publishEvent(new PersonEvent("UPDATED", person.getId()));
 
         return person;
 
@@ -107,13 +106,9 @@ public class PersonService {
     public Integer deleteByNationality(Country nationality) {
         Integer deleted = personRepository.deleteOneByNationality(nationality.name());
         if (deleted == null) {
-            throw new NotFoundException(
-                    "Пользователей с такой национальностью не найдено"
-            );
+            throw new NotFoundException("Пользователей с такой национальностью не найдено");
         }
-        eventPublisher.publishEvent(
-                new PersonEvent("DELETED", deleted)
-        );
+        eventPublisher.publishEvent(new PersonEvent("DELETED", deleted));
         return deleted;
     }
 
@@ -145,11 +140,7 @@ public class PersonService {
     @Transactional
     public void delete(Integer id) {
         Person person = getById(id);
-
         personRepository.delete(person);
-
-        eventPublisher.publishEvent(
-                new PersonEvent("DELETED", id)
-        );
+        eventPublisher.publishEvent(new PersonEvent("DELETED", id));
     }
 }

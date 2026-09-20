@@ -1,7 +1,9 @@
 package org.zirota.islab1.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zirota.islab1.dto.LocationEvent;
 import org.zirota.islab1.entity.Location;
 import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.exceptions.ObjectUsedException;
@@ -14,10 +16,12 @@ import java.util.List;
 public class LocationService {
     private final LocationRepository locationRepository;
     private final PersonRepository personRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public LocationService(LocationRepository locationRepository, PersonRepository personRepository) {
+    public LocationService(LocationRepository locationRepository, PersonRepository personRepository, ApplicationEventPublisher eventPublisher) {
         this.locationRepository = locationRepository;
         this.personRepository = personRepository;
+        this.eventPublisher = eventPublisher;
     }
     public List<Location> findAll() {
         return locationRepository.findAll();
@@ -29,7 +33,9 @@ public class LocationService {
 
     @Transactional
     public Location create(Location location) {
-        return locationRepository.save(location);
+        Location loc = locationRepository.save(location);
+        eventPublisher.publishEvent(new LocationEvent("CREATED",loc.getId()));
+        return loc;
     }
 
 
@@ -40,5 +46,6 @@ public class LocationService {
             throw new ObjectUsedException("Локация связана с какой-то персоной");
         }
         locationRepository.delete(loc);
+        eventPublisher.publishEvent(new LocationEvent("DELETED",id));
     }
 }
