@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.zirota.islab1.dto.NationalityAdapter;
-import org.zirota.islab1.dto.NationalityCountDto;
 import org.zirota.islab1.entity.Person;
 
 import java.util.List;
