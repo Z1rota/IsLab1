@@ -30,4 +30,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleObjectUsedException(ObjectUsedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
+
+    @ExceptionHandler(UsernameAlreadyExists.class)
+    public ResponseEntity<String> handleUsernameAlreadyExists(UsernameAlreadyExists e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentials(org.springframework.security.authentication.BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неверный логин или пароль");
+    }
 }
