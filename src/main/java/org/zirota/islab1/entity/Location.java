@@ -32,6 +32,10 @@ public class Location {
     public Float getZ() {
         return z;
     }
+    public void setZ(Float z) {
+        this.z = z;
+    }
+
     public Long getId() {
         return id;
     }
