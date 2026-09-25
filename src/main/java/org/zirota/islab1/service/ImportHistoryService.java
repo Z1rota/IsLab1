@@ -57,7 +57,7 @@ public class ImportHistoryService {
     }
     @Transactional(readOnly = true)
     public List<ImportOperationResponse> getAllHistory() {
-        return importOperationRepository.finadAllByOrderByIdDesc().stream().map(this::toReponse).toList();
+        return importOperationRepository.finadAllByOrderByIdDesc().stream().map(this::toResponse).toList();
     }
 
     private ImportOperation getOperation(Long id) {
