@@ -40,4 +40,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBadCredentials(org.springframework.security.authentication.BadCredentialsException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неверный логин или пароль");
     }
+
+    @ExceptionHandler(ImportException.class)
+    public ResponseEntity<String> handleImportException(ImportException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

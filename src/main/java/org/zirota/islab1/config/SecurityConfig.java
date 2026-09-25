@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.zirota.islab1.entity.Role;
 import org.zirota.islab1.repository.UserRepository;
 
 import javax.crypto.SecretKey;
