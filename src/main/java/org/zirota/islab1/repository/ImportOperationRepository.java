@@ -11,5 +11,5 @@ import java.util.List;
 public interface ImportOperationRepository extends JpaRepository<ImportOperation, Long> {
 
     List<ImportOperation> findAllByUserUsernameOrderByIdDesc(String username);
-    List<ImportOperation> finadAllByOrderByIdDesc();
+    List<ImportOperation> findAllByOrderByIdDesc();
 }
