@@ -35,5 +35,11 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     boolean existsByLocationId(Long id);
 
+    boolean existsByNameAndHeight(String name, Double height);
+
+    boolean existsByNameAndHeightAndIdNot(String name, Double height, Integer id);
+
+
+
 
 }

@@ -11,6 +11,7 @@ import org.zirota.islab1.dto.NationalityAdapter;
 import org.zirota.islab1.dto.NationalityCountDto;
 import org.zirota.islab1.dto.PersonEvent;
 import org.zirota.islab1.entity.*;
+import org.zirota.islab1.exceptions.DuplicatePersonException;
 import org.zirota.islab1.exceptions.NotFoundException;
 import org.zirota.islab1.repository.CoordinatesRepository;
 import org.zirota.islab1.repository.LocationRepository;
@@ -51,6 +52,12 @@ public class PersonService {
 
     @Transactional
     public Person create(Person person) {
+        String name = person.getName().trim();
+        person.setName(name);
+        if (personRepository.existsByNameAndHeight(name, person.getHeight())) {
+            throw new DuplicatePersonException("Человек с таким именем и ростом есть");
+        }
+
         Coordinates coordinates = coordinatesRepository
                 .findById(person.getCoordinates().getId())
                 .orElseThrow(() ->
@@ -74,6 +81,13 @@ public class PersonService {
 
     @Transactional
     public Person update(Integer id, Person updatedPerson) {
+        String name = updatedPerson.getName().trim();
+        updatedPerson.setName(name);
+
+        if (personRepository.existsByNameAndHeightAndIdNot(name, updatedPerson.getHeight(), id)) {
+            throw new DuplicatePersonException("Person с таким name и height есть");
+        }
+
         Person person = getById(id);
 
         Coordinates coordinates = coordinatesRepository
