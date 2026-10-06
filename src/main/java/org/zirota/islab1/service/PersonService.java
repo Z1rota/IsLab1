@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.zirota.islab1.dto.NationalityAdapter;
 import org.zirota.islab1.dto.NationalityCountDto;
@@ -50,7 +51,8 @@ public class PersonService {
         return personRepository.findById(id).orElseThrow(() -> new RuntimeException("Человека нет"));
     }
 
-    @Transactional
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Person create(Person person) {
         String name = person.getName().trim();
         person.setName(name);
@@ -79,7 +81,7 @@ public class PersonService {
         return savedPerson;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Person update(Integer id, Person updatedPerson) {
         String name = updatedPerson.getName().trim();
         updatedPerson.setName(name);

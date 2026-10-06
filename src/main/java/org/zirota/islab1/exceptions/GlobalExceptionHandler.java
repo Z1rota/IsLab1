@@ -1,5 +1,7 @@
 package org.zirota.islab1.exceptions;
 
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.CannotSerializeTransactionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,5 +51,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicatePersonException.class)
     public ResponseEntity<String> handleDuplicatePersonException(DuplicatePersonException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+    @ExceptionHandler(CannotAcquireLockException.class)
+    public ResponseEntity<String> handleCannotSerializeTransactionException(CannotAcquireLockException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Конфликт транзакций Вась");
     }
 }

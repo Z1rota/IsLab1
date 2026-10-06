@@ -3,6 +3,7 @@ package org.zirota.islab1.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.zirota.islab1.dto.CoordinatesEvent;
@@ -42,7 +43,7 @@ public class ImportService {
     }
 
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public int importPerson(MultipartFile file) {
         List<PersonImportRow> rows = parser.parse(file);
 
