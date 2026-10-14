@@ -4,12 +4,10 @@ package org.zirota.islab1.controller;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.zirota.islab1.entity.Person;
 import org.zirota.islab1.service.PersonService;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/persons")
@@ -30,7 +28,7 @@ public class PersonController {
         return personService.getAll(page,size,sortBy,direction,name);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") 
     public Person getPerson(@PathVariable int id) {
         return personService.getById(id);
     }

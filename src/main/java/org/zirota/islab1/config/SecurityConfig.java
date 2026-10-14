@@ -34,7 +34,8 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
-        return username -> {var user = userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("пользователь не найден"));
+        return username -> {var user = userRepository.findByUsername(username).orElseThrow(()->
+                new UsernameNotFoundException("пользователь не найден"));
         return User.withUsername(username).password(user.getPasswordHash()).roles(user.getRole().name()).build();
         };
     }

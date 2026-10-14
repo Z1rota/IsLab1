@@ -11,7 +11,8 @@ public class SpaController {
             "/persons",
             "/coordinates",
             "/locations",
-            "/special"
+            "/special",
+            "/imports"
     })
     public String forwardAngularRoutes() {
         return "forward:/index.html";
