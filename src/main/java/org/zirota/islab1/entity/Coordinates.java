@@ -2,8 +2,12 @@ package org.zirota.islab1.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Coordinates {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
