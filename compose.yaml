@@ -1,7 +1,7 @@
 services:
   minio:
     build:
-      context: .
+      context: src/main/java/org/zirota/islab1
       dockerfile: docker/minio/Dockerfile
     image: islab-minio:local
     container_name: islab-minio
