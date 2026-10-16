@@ -6,6 +6,7 @@ import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -19,19 +20,20 @@ public class MinioFileStorageService {
         this.bucket = bucket;
     }
 
-    public String upload(InputStream stream, long size) {
-        if (size <= 0 ) {
-            throw new IllegalArgumentException("Файл пустой");
-        }
-        String key = "imports/"+ UUID.randomUUID() + ".csv";
+    public void upload(MultipartFile file, String key) {
 
-        try {
-            minioClient.putObject(PutObjectArgs.builder().
-                    bucket(bucket).object(key).stream(stream, size, -1).contentType("text/csv").build());
-            return key;
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Файл пуст");
+        }
+
+        try (InputStream input = file.getInputStream()) {
+
+            minioClient.putObject(PutObjectArgs.builder().bucket(bucket).object(key)
+                    .stream(input, file.getSize(), -1).contentType("text/csv").build());
 
         } catch (Exception e) {
-            throw new IllegalStateException("Ошибка загрузки файла в ФХ");
+            throw new IllegalStateException(
+                    "Не удалось сохранить CSV в MinIO", e);
         }
     }
 

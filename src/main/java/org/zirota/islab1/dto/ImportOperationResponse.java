@@ -9,6 +9,8 @@ public record ImportOperationResponse(
         ImportStatus status,
         String username,
         Integer addedCount,
-        ZonedDateTime createdAt
+        ZonedDateTime createdAt,
+        String fileName,
+        String downloadUrl
 ) {
 }

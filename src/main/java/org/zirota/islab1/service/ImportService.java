@@ -30,28 +30,31 @@ public class ImportService {
     private final CoordinatesRepository coordinatesRepository;
     private final LocationRepository locationRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final ImportHistoryService importHistoryService;
 
 
     public ImportService(PersonImportParser parser, PersonRepository personRepository,
                          CoordinatesRepository coordinatesRepository,
-                         LocationRepository locationRepository, ApplicationEventPublisher eventPublisher) {
+                         LocationRepository locationRepository, ApplicationEventPublisher eventPublisher,
+                         ImportHistoryService importHistoryService) {
         this.parser = parser;
         this.personRepository = personRepository;
         this.coordinatesRepository = coordinatesRepository;
         this.locationRepository = locationRepository;
         this.eventPublisher = eventPublisher;
+        this.importHistoryService = importHistoryService;
     }
 
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public int importPerson(MultipartFile file) {
+    public int importPerson(MultipartFile file, Long operationId) {
         List<PersonImportRow> rows = parser.parse(file);
-
         validateUniquePerson(rows);
-
         for (PersonImportRow row : rows) {
             createPerson(row);
         }
+        importHistoryService.success(operationId, rows.size());
+
         return rows.size();
     }
 

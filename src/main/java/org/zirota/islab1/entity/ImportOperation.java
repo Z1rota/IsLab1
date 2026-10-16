@@ -29,6 +29,12 @@ public class ImportOperation {
     @Column(name="created_at",nullable = false)
     private ZonedDateTime createdAt;
 
+    @Column(name = "file_key", length = 200)
+    private String fileKey;
+
+    @Column(name = "file_name", length = 255)
+    private String fileName;
+
     public ImportStatus getStatus() {
         return status;
     }
@@ -63,5 +69,18 @@ public class ImportOperation {
 
     public Long getId() {
         return id;
+    }
+
+    public void setFileKey(String fileKey) {
+        this.fileKey = fileKey;
+    }
+    public String getFileKey() {
+        return fileKey;
+    }
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+    public String getFileName() {
+        return fileName;
     }
 }
