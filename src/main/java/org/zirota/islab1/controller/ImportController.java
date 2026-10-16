@@ -2,11 +2,13 @@ package org.zirota.islab1.controller;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.zirota.islab1.dto.ImportOperationResponse;
 import org.zirota.islab1.dto.PersonImportRow;
+import org.zirota.islab1.service.ImportFileDownloadService;
 import org.zirota.islab1.service.ImportHistoryService;
 import org.zirota.islab1.service.ImportOrchestrator;
 import org.zirota.islab1.service.ImportService;
@@ -18,9 +20,13 @@ import java.util.List;
 public class ImportController {
     private final ImportHistoryService historyService;
     private final ImportOrchestrator importOrchestrator;
-    public ImportController(ImportHistoryService historyService, ImportOrchestrator importOrchestrator) {
+    private final ImportFileDownloadService downloadService;
+    public ImportController(ImportHistoryService historyService, ImportOrchestrator importOrchestrator,
+                            ImportFileDownloadService downloadService) {
         this.historyService = historyService;
         this.importOrchestrator = importOrchestrator;
+        this.downloadService = downloadService;
+
     }
 
     @PostMapping
@@ -32,6 +38,11 @@ public class ImportController {
     @GetMapping("/history")
     public List<ImportOperationResponse> getHistory(Authentication authentication) {
         return historyService.getUserHistory(authentication.getName());
+    }
+
+    @GetMapping("/{id}/file")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable long id, Authentication authentication) {
+        return downloadService.download(id,authentication.getName(),false);
     }
 
 }
