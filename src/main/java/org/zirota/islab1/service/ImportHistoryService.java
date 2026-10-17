@@ -45,6 +45,7 @@ public class ImportHistoryService {
         operation.setUser(user);
         operation.setStatus(ImportStatus.IN_PROGRESS);
         operation.setFileKey("imports/"+ UUID.randomUUID()+".csv");
+        operation.setFileName(sanitizeFileName(originalFilename));
         importOperationRepository.save(operation);
         return new StartedImport(operation.getId(), operation.getFileKey());
     }
@@ -86,15 +87,21 @@ public class ImportHistoryService {
 
     @Transactional(readOnly = true)
     public List<ImportOperationResponse> getAllHistory() {
-        return importOperationRepository.findAllByOrderByIdDesc().stream().map(op -> toResponse(op,false)).toList();
+        return importOperationRepository.findAllByOrderByIdDesc().stream().map(op -> toResponse(op,true)).toList();
     }
 
     @Transactional(readOnly = true)
     public FileInfo getFileForDownload(Long id, String username, boolean admin) {
         ImportOperation operation = getOperation(id);
+
         if (!admin && !operation.getUser().getUsername().equals(username)) {
             throw new AccessDeniedException("Нет доступа");
         }
+
+        if (operation.getStatus() != ImportStatus.SUCCESS || operation.getFileKey() == null) {
+            throw new NotFoundException("Файл импорта недоступен");
+        }
+
         return new FileInfo(operation.getFileKey(), operation.getFileName());
     }
     @Transactional(readOnly = true)

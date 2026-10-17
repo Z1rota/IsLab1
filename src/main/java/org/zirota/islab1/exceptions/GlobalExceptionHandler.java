@@ -52,8 +52,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDuplicatePersonException(DuplicatePersonException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
-    @ExceptionHandler(CannotAcquireLockException.class)
-    public ResponseEntity<String> handleCannotSerializeTransactionException(CannotAcquireLockException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Конфликт транзакций Вась");
+    @ExceptionHandler({CannotAcquireLockException.class,CannotSerializeTransactionException.class})
+    public ResponseEntity<String> handleCannotSerializeTransactionException(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Конфликт транзакций");
     }
 }

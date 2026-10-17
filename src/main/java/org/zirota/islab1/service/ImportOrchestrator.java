@@ -3,6 +3,7 @@ package org.zirota.islab1.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,8 @@ public class ImportOrchestrator {
     private final ImportHistoryService historyService;
     private final ImportService importService;
     private final MinioFileStorageService fileStorage;
+    @Value("${app.import.test.fail-after-minio:false}")
+    private boolean failAfterMinio;
 
     public ImportOrchestrator(ImportHistoryService importHistoryService, ImportService importService,
                               MinioFileStorageService fileStorage) {
@@ -29,6 +32,9 @@ public class ImportOrchestrator {
 
         try {
             fileStorage.upload(file, fileKey);
+            if (failAfterMinio) {
+                throw new RuntimeException("TEST: RuntimeException после загрузки в MinIO");
+            }
             importService.importPerson(file, operationId);
 
             log.info("Import {} committed successfully", operationId);

@@ -42,7 +42,7 @@ public class MinioFileStorageService {
             return minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(key).build());
 
         } catch (Exception e) {
-            throw new IllegalStateException("Ошибка скачивания файла из ФХ");
+            throw new IllegalStateException("Ошибка скачивания файла из ФХ",e);
         }
     }
 
@@ -50,7 +50,7 @@ public class MinioFileStorageService {
         try {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucket).object(key).build());
         } catch (Exception e) {
-            throw new IllegalStateException("Ошибка удаления файла из ФХ");
+            throw new IllegalStateException("Ошибка удаления файла из ФХ",e);
         }
     }
 
