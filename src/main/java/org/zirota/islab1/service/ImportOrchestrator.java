@@ -14,8 +14,12 @@ public class ImportOrchestrator {
     private final ImportHistoryService historyService;
     private final ImportService importService;
     private final MinioFileStorageService fileStorage;
+
     @Value("${app.import.test.fail-after-minio:false}")
     private boolean failAfterMinio;
+
+    @Value("${app.import.test.pause-after-minio-ms:0}")
+    private long pauseAfterMinioMs;
 
     public ImportOrchestrator(ImportHistoryService importHistoryService, ImportService importService,
                               MinioFileStorageService fileStorage) {
@@ -32,6 +36,18 @@ public class ImportOrchestrator {
 
         try {
             fileStorage.upload(file, fileKey);
+
+            if (pauseAfterMinioMs > 0) {
+                log.info("TEST: Import {} paused for {} ms", operationId, pauseAfterMinioMs);
+
+                try {
+                    Thread.sleep(pauseAfterMinioMs);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException("Пауза импорта прервана", e);
+                }
+            }
+
             if (failAfterMinio) {
                 throw new RuntimeException("TEST: RuntimeException после загрузки в MinIO");
             }
@@ -40,6 +56,12 @@ public class ImportOrchestrator {
             log.info("Import {} committed successfully", operationId);
 
         } catch (RuntimeException originalError) {
+            log.error(
+                    "Import {} failed, exception={}",
+                    operationId,
+                    originalError.getClass().getName(),
+                    originalError
+            );
 
             try {
                 boolean failed = historyService.failedNotCommited(operationId);

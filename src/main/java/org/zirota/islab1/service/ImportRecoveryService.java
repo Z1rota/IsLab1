@@ -2,6 +2,7 @@ package org.zirota.islab1.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,15 @@ public class ImportRecoveryService {
         this.historyService = importHistoryService;
         this.storage = minioFileStorageService;
     }
+
+    @Value("${app.import.stale-after-seconds:1800}")
+    private long staleAfterSeconds;
+
     @Scheduled(fixedDelayString = "${app.import.recovery-interval-ms}",
             initialDelayString = "${app.import.recovery-interval-ms}" )
     public void recover() {
         try {
-            var stale = historyService.findStaleImports(ZonedDateTime.now().minusMinutes(30));
+            var stale = historyService.findStaleImports(ZonedDateTime.now().minusSeconds(staleAfterSeconds));
             for (Long id: stale) {
                 try {
                     historyService.failedNotCommited(id);
